@@ -13,6 +13,11 @@
 
 *.pyc
 
+**/__pycache__
+*.pyc
+**/.pytest_cache
+**/.venv
+
 # misc
 .DS_Store
 .env.local
