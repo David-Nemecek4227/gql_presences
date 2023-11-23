@@ -1,6 +1,6 @@
 from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
 
-from gql_presences.DBDefinitions import (
+from gql_presences.DBDefinitions.__init__ import (
     ContentModel,
     TaskModel
 )
