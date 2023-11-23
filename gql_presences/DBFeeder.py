@@ -1,8 +1,8 @@
 from doctest import master
 from functools import cache
-from gql_presences.DBDefinitions import (
+from gql_presences.DBDefinitions.__init__ import (
     ContentModel,
-    TaskModel,
+    TaskModel
 )
 
 import random
