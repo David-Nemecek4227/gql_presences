@@ -16,14 +16,14 @@ class TaskModel(BaseModel):
     __tablename__ = "tasks"
 
     id = UUIDColumn()
-    name = Column(String)
-    brief_des = Column(String)
-    detailed_des = Column(String)
-    reference = Column(String)
-    date_of_entry = Column(DateTime)
-    date_of_submission = Column(DateTime)
-    date_of_fulfillment = Column(DateTime)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
+    name = Column(String, comment="name of task")
+    brief_des = Column(String, comment="brief description")
+    detailed_des = Column(String, comment="detailed description")
+    reference = Column(String, comment="reference")
+    date_of_entry = Column(DateTime, comment="time of entry")
+    date_of_submission = Column(DateTime, comment="time of submission")
+    date_of_fulfillment = Column(DateTime, comment="time of fulfillment")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="timestamp / token")
 
     user_id = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True)
     #users = relationship("UserModel", back_populates="tasks", foreign_keys=[user_id])
@@ -32,7 +32,7 @@ class TaskModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
 

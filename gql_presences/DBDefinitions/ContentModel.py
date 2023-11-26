@@ -15,14 +15,14 @@ class ContentModel(BaseModel):
     __tablename__ = "taskcontents"
 
     id = UUIDColumn()
-    brief_des = Column(String)
-    detailed_des = Column(String)
+    brief_des = Column(String, comment="brief description")
+    detailed_des = Column(String, comment="detailed description")
 
     event_id = UUIDFKey(nullable=True)#Column(ForeignKey("events.id"), index=True)
 
-    created = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now())
-    changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="when this entity has been created")
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="timestamp / token")
+    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
     changedby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # events = relationship('EventModel', back_populates='contents')
