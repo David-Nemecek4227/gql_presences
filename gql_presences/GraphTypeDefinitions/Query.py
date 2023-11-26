@@ -23,7 +23,6 @@ class Query:
     from .ContentGQLModel import (
         content_by_id,
         content_page,
-        content_update
     )
     content_page = content_page
     content_by_id = content_by_id
