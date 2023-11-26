@@ -4,12 +4,12 @@ import typing
 import asyncio
 
 from fastapi import FastAPI
-import strawberry
+import strawberry as strawberryA
 from strawberry.fastapi import GraphQLRouter
 
 ## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
 ## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
-from gql_presences.GraphTypeDefinitions import Query
+#from gql_presences.GraphTypeDefinitions.Query import Query
 
 ## Definice DB typu (pomoci SQLAlchemy https://www.sqlalchemy.org/)
 ## SQLAlchemy zvoleno kvuli moznost komunikovat s DB asynchronne
@@ -93,8 +93,15 @@ class MyGraphQL(GraphQL):
             "all": await createLoaders(asyncSessionMaker)
         }
 
-from gql_presences.GraphTypeDefinitions import schema
+import gql_presences.GraphTypeDefinitions
 ## ASGI app, kterou "moutneme"
+from gql_presences.GraphTypeDefinitions.Query import Query
+from gql_presences.GraphTypeDefinitions.UserGQLModel import UserGQLModel
+from gql_presences.GraphTypeDefinitions.EventGQLModel import EventGQLModel
+from gql_presences.GraphTypeDefinitions.Mutation import Mutation
+
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, EventGQLModel), mutation=Mutation)
+
 graphql_app = MyGraphQL(
     schema, graphiql=True, allow_queries_via_get=True
 )

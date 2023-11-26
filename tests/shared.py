@@ -1,16 +1,12 @@
-import sqlalchemy
 import sys
-import asyncio
 
 # setting path
 sys.path.append("../gql_presences")
 
-import pytest
-
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_presences.DBDefinitions import BaseModel
-from gql_presences.DBDefinitions import TaskModel, ContentModel
+from gql_presences.DBDefinitions.__init__ import BaseModel
+from gql_presences.DBDefinitions.__init__ import TaskModel, ContentModel
 
 async def prepare_in_memory_sqllite():
     from sqlalchemy.ext.asyncio import create_async_engine

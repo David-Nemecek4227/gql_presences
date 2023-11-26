@@ -1,6 +1,4 @@
-import sqlalchemy
 import sys
-import asyncio
 
 # setting path
 sys.path.append("../gql_granting")
@@ -9,7 +7,7 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_presences.GraphTypeDefinitions import schema
+from gql_presences.GraphTypeDefinitions.__init__ import schema
 
 from shared import (
     prepare_demodata,
