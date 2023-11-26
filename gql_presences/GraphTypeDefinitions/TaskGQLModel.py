@@ -1,4 +1,4 @@
-from typing import Union, Annotated, Optional
+from typing import Union, Annotated, Optional, List
 import strawberry as strawberryA
 import datetime
 from gql_presences.GraphResolvers import resolveTaskModelById
@@ -6,7 +6,8 @@ from .withInfo import withInfo
 
 EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
-
+def getLoaders(info):
+    return info.context['all']
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing tasks""")
 class TaskGQLModel:
@@ -103,8 +104,7 @@ class TaskResultGQLModel:
 class TaskUpdateGQLModel:
     lastchange: datetime.datetime
     id: strawberryA.ID
-    name: Optional[str]
-
+    name: Optional[str]=None
     brief_des: Optional[str] = None
     detailed_des: Optional[str] = None
     reference: Optional[str] = None
@@ -112,3 +112,58 @@ class TaskUpdateGQLModel:
     date_of_submission: Optional[datetime.datetime] = None
     date_of_fulfillment: Optional[datetime.datetime] = None
     event_id: Optional[strawberryA.ID] = None
+
+#####################################################################
+#
+# Special fields for query
+#
+#####################################################################
+@strawberryA.field(description="""Finds tasks by their id""")
+async def task_by_id(
+    self, info: strawberryA.types.Info, id: strawberryA.ID
+) -> Union[TaskGQLModel, None]:
+    result = await TaskGQLModel.resolve_reference(info, id)
+    return result
+
+@strawberryA.field(description="""Finds tasks by their page""")
+async def task_page(
+    self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
+) -> List[TaskGQLModel]:
+    loader = getLoaders(info).tasks
+    result = await loader.page(skip=skip, limit=limit)
+    return result
+
+@strawberryA.field(description="""Finds presence by their id""")
+async def tasks_by_event(
+    self, info: strawberryA.types.Info, id: strawberryA.ID
+) -> List[TaskGQLModel]:
+    loader = getLoaders(info).tasks
+    result = await loader.filter_by(event_id=id)
+    return result
+
+#####################################################################
+#
+# Mutation section
+#
+#####################################################################
+
+@strawberryA.mutation(description="Adds a task.")
+async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
+    loader = getLoaders(info).tasks
+    row = await loader.insert(task)
+    result = TaskResultGQLModel()
+    result.msg = "ok"
+    result.id = row.id
+    return result
+
+@strawberryA.mutation(description="Update the task.")
+async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
+    loader = getLoaders(info).tasks
+    row = await loader.update(task)
+    result = TaskResultGQLModel()
+    result.msg = "ok"
+    result.id = task.id
+    if row is None:
+        result.msg = "fail"
+
+    return result
