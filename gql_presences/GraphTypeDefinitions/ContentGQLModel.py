@@ -38,6 +38,16 @@ class ContentGQLModel:
         else:
             result = EventGQLModel(id=self.event_id)
         return result
+
+
+@strawberryA.input
+class ContentInsertGQLModel:
+    brief_des: Optional[str] = ""
+    detailed_des: Optional[str] = ""
+    event_id: Optional[strawberryA.ID] = None
+    id: Optional[strawberryA.ID] = None
+
+
 @strawberryA.input
 class ContentUpdateGQLModel:
     lastchange: datetime.datetime
@@ -82,6 +92,15 @@ async def content_page(
 # Mutation section
 #
 #####################################################################
+
+@strawberryA.mutation(description="Adds a task.")
+async def content_insert(self, info: strawberryA.types.Info, content: ContentInsertGQLModel) -> ContentResultGQLModel:
+    loader = getLoaders(info).contents
+    row = await loader.insert(content)
+    result = ContentResultGQLModel()
+    result.msg = "ok"
+    result.id = row.id
+    return result
 
 
 @strawberryA.mutation(description="Update the content.")

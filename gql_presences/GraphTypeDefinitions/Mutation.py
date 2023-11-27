@@ -15,6 +15,8 @@ class Mutation:
     task_update=task_update
 
     from .ContentGQLModel import (
+        content_insert,
         content_update
     )
     content_update=content_update
+    content_insert=content_insert

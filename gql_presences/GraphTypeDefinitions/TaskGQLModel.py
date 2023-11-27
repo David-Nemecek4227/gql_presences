@@ -77,14 +77,12 @@ class TaskGQLModel:
 class TaskInsertGQLModel:
     name: str
     user_id: strawberryA.ID
-
     brief_des: Optional[str] = ""
     detailed_des: Optional[str] = ""
     reference: Optional[str] = ""
     date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
-
     event_id: Optional[strawberryA.ID] = None
     id: Optional[strawberryA.ID] = None
 
