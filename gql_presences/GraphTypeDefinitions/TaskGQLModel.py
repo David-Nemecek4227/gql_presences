@@ -1,4 +1,6 @@
 from typing import Union, Annotated, Optional, List
+import typing
+import uuid
 import strawberry as strawberryA
 import datetime
 from gql_presences.GraphResolvers import resolveTaskModelById
@@ -84,12 +86,12 @@ class TaskInsertGQLModel:
     date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
     event_id: Optional[strawberryA.ID] = None
-    id: Optional[strawberryA.ID] = None
+    id: typing.Optional[uuid.UUID] = strawberryA.field(description="primary key (UUID), could be client generated", default=None)
 
 
 @strawberryA.type
 class TaskResultGQLModel:
-    id: strawberryA.ID = None
+    id: uuid.UUID = strawberryA.field(description="primary key of CU operation object")
     msg: str = None
 
     @strawberryA.field(description="""Result of user operation""")
@@ -101,7 +103,7 @@ class TaskResultGQLModel:
 @strawberryA.input
 class TaskUpdateGQLModel:
     lastchange: datetime.datetime
-    id: strawberryA.ID
+    id: uuid.UUID = strawberryA.field(description="primary key (UUID), identifies object of operation")
     name: Optional[str]=None
     brief_des: Optional[str] = None
     detailed_des: Optional[str] = None
@@ -149,7 +151,7 @@ async def tasks_by_event(
 async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
     loader = getLoaders(info).tasks
     row = await loader.insert(task)
-    result = TaskResultGQLModel()
+    result = TaskResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
     result.id = row.id
     return result
@@ -158,7 +160,7 @@ async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLMod
 async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
     loader = getLoaders(info).tasks
     row = await loader.update(task)
-    result = TaskResultGQLModel()
+    result = TaskResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
     result.id = task.id
     if row is None:
