@@ -1,4 +1,6 @@
 from typing import Union, Annotated, Optional,List
+import typing
+import uuid
 import strawberry as strawberryA
 from .withInfo import withInfo
 import datetime
@@ -45,20 +47,21 @@ class ContentInsertGQLModel:
     brief_des: Optional[str] = ""
     detailed_des: Optional[str] = ""
     event_id: Optional[strawberryA.ID] = None
-    id: Optional[strawberryA.ID] = None
+    id: typing.Optional[uuid.UUID] = strawberryA.field(description="primary key (UUID), could be client generated", default=None)
 
 
 @strawberryA.input
 class ContentUpdateGQLModel:
     lastchange: datetime.datetime
-    id: strawberryA.ID
+    id: uuid.UUID = strawberryA.field(description="primary key (UUID), identifies object of operation")
+
     brief_des: Optional[str] = None
     detailed_des: Optional[str] = None
     event_id: Optional[strawberryA.ID] = None
 
 @strawberryA.type
 class ContentResultGQLModel:
-    id: strawberryA.ID = None
+    id: uuid.UUID = strawberryA.field(description="primary key of CU operation object")
     msg: str = None
 
     @strawberryA.field(description="""Result of user operation""")
@@ -97,7 +100,7 @@ async def content_page(
 async def content_insert(self, info: strawberryA.types.Info, content: ContentInsertGQLModel) -> ContentResultGQLModel:
     loader = getLoaders(info).contents
     row = await loader.insert(content)
-    result = ContentResultGQLModel()
+    result = ContentResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
     result.id = row.id
     return result
@@ -107,7 +110,7 @@ async def content_insert(self, info: strawberryA.types.Info, content: ContentIns
 async def content_update(self, info: strawberryA.types.Info, content: ContentUpdateGQLModel) -> ContentResultGQLModel:
     loader = getLoaders(info).contents
     row = await loader.update(content)
-    result = ContentResultGQLModel()
+    result = ContentResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
     result.id = content.id
     if row is None:
