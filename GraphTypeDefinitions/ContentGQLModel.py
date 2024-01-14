@@ -53,7 +53,7 @@ class ContentInsertGQLModel:
 
 @strawberryA.input
 class ContentUpdateGQLModel:
-    lastchange: datetime.datetime
+    lastchange: datetime.datetime = strawberryA.field(description="timestamp of last change = TOKEN")
     id: uuid.UUID = strawberryA.field(description="primary key (UUID), identifies object of operation")
 
     brief_des: Optional[str] = None

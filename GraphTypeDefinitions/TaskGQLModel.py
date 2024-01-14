@@ -103,7 +103,7 @@ class TaskResultGQLModel:
 
 @strawberryA.input
 class TaskUpdateGQLModel:
-    lastchange: datetime.datetime
+    lastchange: datetime.datetime = strawberryA.field(description="timestamp of last change = TOKEN")
     id: uuid.UUID = strawberryA.field(description="primary key (UUID), identifies object of operation")
     name: Optional[str]=None
     brief_des: Optional[str] = None
