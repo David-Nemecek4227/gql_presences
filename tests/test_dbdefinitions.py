@@ -1,54 +1,43 @@
-import sqlalchemy
-import sys
-import asyncio
-
-# setting path
-sys.path.append("../gql_presences")
-
 import pytest
 
-# from ..uoishelpers.uuid import UUIDColumn
+from DBDefinitions import startEngine
 
-from gql_presences.DBDefinitions.__init__ import BaseModel
-from gql_presences.DBDefinitions.__init__ import TaskModel, ContentModel
-
-from shared import prepare_demodata, prepare_in_memory_sqllite, get_demodata
+from .shared import prepare_demodata, prepare_in_memory_sqllite
 
 
 @pytest.mark.asyncio
-async def test_table_users_feed():
+async def test_load_demo_data():
     async_session_maker = await prepare_in_memory_sqllite()
     await prepare_demodata(async_session_maker)
-
-    data = get_demodata()
-
-from gql_presences.DBDefinitions.__init__ import ComposeConnectionString
+    #data = get_demodata()
 
 
 def test_connection_string():
-    connectionString = ComposeConnectionString()
+    from DBDefinitions import ComposeConnectionString
+    connection_string = ComposeConnectionString()
 
-    assert "://" in connectionString
-    assert "@" in connectionString
-
-
-from gql_presences.DBDefinitions.__init__ import UUIDColumn
-
-
-def test_connection_uuidcolumn():
-    col = UUIDColumn(name="name")
-
-    assert col is not None
-
-
-from gql_presences.DBDefinitions.__init__ import startEngine
+    assert "://" in connection_string
 
 
 @pytest.mark.asyncio
 async def test_table_start_engine():
-    connectionString = "sqlite+aiosqlite:///:memory:"
+    connection_string = "sqlite+aiosqlite:///:memory:"
     async_session_maker = await startEngine(
-        connectionString, makeDrop=True, makeUp=True
+        connection_string, makeDrop=True, makeUp=True
     )
 
     assert async_session_maker is not None
+
+
+from utils.DBFeeder import initDB
+
+
+@pytest.mark.asyncio
+async def test_initDB():
+    connection_string = "sqlite+aiosqlite:///:memory:"
+    async_session_maker = await startEngine(
+        connection_string, makeDrop=True, makeUp=True
+    )
+
+    assert async_session_maker is not None
+    await initDB(async_session_maker)

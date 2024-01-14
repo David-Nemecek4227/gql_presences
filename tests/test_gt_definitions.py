@@ -7,13 +7,13 @@ import pytest
 
 # from ..uoishelpers.uuid import UUIDColumn
 
-from gql_presences.GraphTypeDefinitions.__init__ import schema
+from GraphTypeDefinitions import schema
 
-from shared import (
+from .shared import (
     prepare_demodata,
     prepare_in_memory_sqllite,
     get_demodata,
-    createContext,
+    create_context,
 )
 
 
@@ -32,7 +32,7 @@ def createByIdTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         query = "query($id: ID!){" f"{queryEndpoint}(id: $id)" "{" + attlist + "}}"
 
-        context_value = await createContext(async_session_maker)
+        context_value = await create_context(async_session_maker)
         variable_values = {"id": datarow["id"]}
         print("createByIdTest", queryEndpoint, variable_values, flush=True)
         resp = await schema.execute(
@@ -62,7 +62,7 @@ def createPageTest(tableName, queryEndpoint, attributeNames=["id", "name"]):
 
         query = "query{" f"{queryEndpoint}" "{" + attlist + "}}"
 
-        context_value = await createContext(async_session_maker)
+        context_value = await create_context(async_session_maker)
         resp = await schema.execute(query, context_value=context_value)
         print(resp, flush=True)
         assert resp.errors is None
@@ -100,7 +100,7 @@ def createResolveReferenceTest(tableName, gqltype, attributeNames=["id", "name"]
                 '}' + 
                 '}')
 
-            context_value = await createContext(async_session_maker)
+            context_value = await create_context(async_session_maker)
             resp = await schema.execute(query, context_value=context_value)
             data = resp.data
             print(data, flush=True)
@@ -146,7 +146,7 @@ async def test_task_mutation():
             }
         '''
 
-    context_value = await createContext(async_session_maker)
+    context_value = await create_context(async_session_maker)
     variable_values = {
         "user_id": user_id,
         "name": name
@@ -189,7 +189,7 @@ async def test_task_mutation():
             }
         '''
     newName = "newName"
-    context_value = await createContext(async_session_maker)
+    context_value = await create_context(async_session_maker)
     variable_values = {"id": id, "name": newName, "lastchange": lastchange}
     resp = await schema.execute(query, context_value=context_value, variable_values=variable_values)
     assert resp.errors is None
