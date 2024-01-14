@@ -1,7 +1,7 @@
 import typing
 from typing import Annotated
 import strawberry as strawberryA
-from gql_presences.GraphResolvers import (
+from gql_presences.GraphTypeDefinitions.GraphResolvers import (
     resolveTasksForUser,
 )
 from .withInfo import withInfo

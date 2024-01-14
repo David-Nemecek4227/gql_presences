@@ -1,15 +1,15 @@
 from typing import List, Annotated
 import typing
 import strawberry as strawberryA
-from gql_presences.GraphResolvers import resolveContentForEvent
+from gql_presences.GraphTypeDefinitions.GraphResolvers import resolveContentForEvent
 from .withInfo import withInfo
 
 TaskGQLModel = Annotated["TaskGQLModel",strawberryA.lazy(".TaskGQLModel")]
 ContentGQLModel = Annotated["ContentGQLModel",strawberryA.lazy(".ContentGQLModel")]
 
 
-def getLoaders(info):
-    return info.context['all']
+# def getLoaders(info):
+#     return info.context['all']
 
 
 @strawberryA.federation.type(extend=True, keys=["id"])
