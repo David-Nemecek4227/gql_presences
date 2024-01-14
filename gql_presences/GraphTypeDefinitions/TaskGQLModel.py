@@ -3,22 +3,24 @@ import typing
 import uuid
 import strawberry as strawberryA
 import datetime
-from gql_presences.GraphResolvers import resolveTaskModelById
+from gql_presences.GraphTypeDefinitions.GraphResolvers import resolveTaskModelById
 from .withInfo import withInfo
-
+from utils.Dataloaders import getLoadersFromInfo
 EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
-def getLoaders(info):
-    return info.context['all']
+# def getLoaders(info):
+#     return info.context['all']
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing tasks""")
 class TaskGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveTaskModelById(session, id)
-            result._type_definition = cls._type_definition
-            return result
+    def getLoader(cls, info):
+        return getLoadersFromInfo(info).tasks
+    # async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    #     async with withInfo(info) as session:
+    #         result = await resolveTaskModelById(session, id)
+    #         result._type_definition = cls._type_definition
+    #         return result
 
     @strawberryA.field(description="""Primary key of task""")
     def id(self) -> strawberryA.ID:
@@ -129,7 +131,7 @@ async def task_by_id(
 async def task_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
 ) -> List[TaskGQLModel]:
-    loader = getLoaders(info).tasks
+    loader = getLoadersFromInfo(info).tasks
     result = await loader.page(skip=skip, limit=limit)
     return result
 
@@ -137,7 +139,7 @@ async def task_page(
 async def tasks_by_event(
     self, info: strawberryA.types.Info, id: strawberryA.ID
 ) -> List[TaskGQLModel]:
-    loader = getLoaders(info).tasks
+    loader = getLoadersFromInfo(info).tasks
     result = await loader.filter_by(event_id=id)
     return result
 
@@ -149,7 +151,7 @@ async def tasks_by_event(
 
 @strawberryA.mutation(description="Adds a task.")
 async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
-    loader = getLoaders(info).tasks
+    loader = getLoadersFromInfo(info).tasks
     row = await loader.insert(task)
     result = TaskResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
@@ -158,7 +160,7 @@ async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLMod
 
 @strawberryA.mutation(description="Update the task.")
 async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
-    loader = getLoaders(info).tasks
+    loader = getLoadersFromInfo(info).tasks
     row = await loader.update(task)
     result = TaskResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
