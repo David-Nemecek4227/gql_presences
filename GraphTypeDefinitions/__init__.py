@@ -1,11 +1,4 @@
-from typing import List, Union
-import typing
-from unittest import result
 import strawberry as strawberryA
-import uuid
-import datetime
-from contextlib import asynccontextmanager
-
 
 ###########################################################################################################################
 #
@@ -17,17 +10,6 @@ from contextlib import asynccontextmanager
 #
 # priklad rozsireni UserGQLModel
 #
-
-from gql_presences.GraphResolvers import (
-    resolveTaskModelByPage,
-    resolveTaskModelById,
-    resolveTasksForUser,
-)
-from gql_presences.GraphResolvers import (
-    resolveContentModelByPage,
-    resolveContentModelById,
-    resolveContentForEvent,
-)
 
 
 #     zde je rozsireni o dalsi resolvery¨
@@ -41,9 +23,8 @@ from gql_presences.GraphResolvers import (
 # zde definujte svuj Query model
 #
 ###########################################################################################################################
-from gql_presences.GraphResolvers import resolveTasksForEvent
 
-    # 264 - 267
+# 264 - 267
     # volat funkci
     #
 
