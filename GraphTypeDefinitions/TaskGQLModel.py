@@ -3,16 +3,15 @@ import typing
 import uuid
 import strawberry as strawberryA
 import datetime
-from gql_presences.GraphTypeDefinitions.GraphResolvers import resolveTaskModelById
-from .withInfo import withInfo
+from .BaseGQLModel import BaseGQLModel
+
 from utils.Dataloaders import getLoadersFromInfo
 EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
 UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
 # def getLoaders(info):
 #     return info.context['all']
-
 @strawberryA.federation.type(keys=["id"], description="""Entity representing tasks""")
-class TaskGQLModel:
+class TaskGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).tasks
@@ -164,7 +163,7 @@ async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLMod
     row = await loader.update(task)
     result = TaskResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
-    result.id = task.id
+    result.id = row.id
     if row is None:
         result.msg = "fail"
 

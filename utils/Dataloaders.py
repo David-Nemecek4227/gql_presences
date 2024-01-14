@@ -1,7 +1,7 @@
-from uoishelpers.dataloaders import createIdLoader, createFkeyLoader
+from uoishelpers.dataloaders import createIdLoader
 import logging
 from functools import cache
-from gql_presences.DBDefinitions.__init__ import (
+from DBDefinitions import (
     ContentModel,
     TaskModel
 )
@@ -12,12 +12,10 @@ dbmodels = {
     "tasks": TaskModel
 }
 
-import datetime
 import aiohttp
 import asyncio
 import os
 from aiodataloader import DataLoader
-from uoishelpers.resolvers import select, update, delete
 
 
 @cache
@@ -112,12 +110,12 @@ def createLoaders(asyncSessionMaker, models=dbmodels) -> Loaders:
         @property
         @cache
         def contents(self):
-            return createIdLoader(asyncSessionMaker, ContentModel)
+            return createIdLoader(asyncSessionMaker, models["contents"])
 
         @property
         @cache
         def tasks(self):
-            return createIdLoader(asyncSessionMaker, TaskModel)
+            return createIdLoader(asyncSessionMaker, models["tasks"])
 
     return Loaders()
 

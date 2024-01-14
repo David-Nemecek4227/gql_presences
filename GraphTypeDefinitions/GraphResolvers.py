@@ -4,7 +4,7 @@ from uoishelpers.resolvers import (
     createEntityGetter,
 )
 
-from gql_presences.DBDefinitions.__init__ import (
+from DBDefinitions import (
     TaskModel,
     ContentModel,
 )

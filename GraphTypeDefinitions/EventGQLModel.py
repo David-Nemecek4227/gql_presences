@@ -1,7 +1,7 @@
 from typing import List, Annotated
 import typing
 import strawberry as strawberryA
-from gql_presences.GraphTypeDefinitions.GraphResolvers import resolveContentForEvent
+from GraphTypeDefinitions.GraphResolvers import resolveContentForEvent
 from .withInfo import withInfo
 
 TaskGQLModel = Annotated["TaskGQLModel",strawberryA.lazy(".TaskGQLModel")]

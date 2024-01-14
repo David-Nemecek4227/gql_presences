@@ -2,19 +2,15 @@ from typing import Union, Annotated, Optional,List
 import typing
 import uuid
 import strawberry as strawberryA
-from .withInfo import withInfo
 import datetime
 from .BaseGQLModel import BaseGQLModel
-from gql_presences.GraphTypeDefinitions.GraphResolvers import (
-    resolveContentModelById,
-)
 from utils.Dataloaders import getLoadersFromInfo
 EventGQLModel = Annotated["EventGQLModel",strawberryA.lazy(".EventGQLModel")]
 # def getLoaders(info):
 #     return info.context['all']
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing content""")
-class ContentGQLModel:
+class ContentGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).contents
@@ -116,8 +112,7 @@ async def content_update(self, info: strawberryA.types.Info, content: ContentUpd
     loader = getLoadersFromInfo(info).contents
     row = await loader.update(content)
     result = ContentResultGQLModel(id=row.id, msg="ok")
-    result.msg = "ok"
-    result.id = content.id
+
     if row is None:
         result.msg = "fail"
 

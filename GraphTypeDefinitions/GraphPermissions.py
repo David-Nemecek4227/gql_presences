@@ -1,9 +1,6 @@
 from sqlalchemy.future import select
 import strawberry
 
-from gql_presences.DBDefinitions.Base import (
-    BaseModel
-)
 
 def AsyncSessionFromInfo(info):
     return info.context["session"]
