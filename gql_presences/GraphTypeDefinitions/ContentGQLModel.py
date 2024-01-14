@@ -4,21 +4,26 @@ import uuid
 import strawberry as strawberryA
 from .withInfo import withInfo
 import datetime
-from gql_presences.GraphResolvers import (
+from .BaseGQLModel import BaseGQLModel
+from gql_presences.GraphTypeDefinitions.GraphResolvers import (
     resolveContentModelById,
 )
+from utils.Dataloaders import getLoadersFromInfo
 EventGQLModel = Annotated["EventGQLModel",strawberryA.lazy(".EventGQLModel")]
-def getLoaders(info):
-    return info.context['all']
+# def getLoaders(info):
+#     return info.context['all']
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing content""")
 class ContentGQLModel:
     @classmethod
-    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
-        async with withInfo(info) as session:
-            result = await resolveContentModelById(session, id)
-            result._type_definition = cls._type_definition
-            return result
+    def getLoader(cls, info):
+        loader = getLoadersFromInfo(info).contents
+        return loader
+    # async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    #     async with withInfo(info) as session:
+    #         result = await resolveContentModelById(session, id)
+    #         result._type_definition = cls._type_definition
+    #         return result
 
     @strawberryA.field(description="""Primary key of content""")
     def id(self) -> strawberryA.ID:
@@ -86,7 +91,7 @@ async def content_by_id(
 async def content_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
 ) -> List[ContentGQLModel]:
-    loader = getLoaders(info).contents
+    loader = getLoadersFromInfo(info).contents
     result = await loader.page(skip=skip, limit=limit)
     return result
 
@@ -98,7 +103,7 @@ async def content_page(
 
 @strawberryA.mutation(description="Adds a task.")
 async def content_insert(self, info: strawberryA.types.Info, content: ContentInsertGQLModel) -> ContentResultGQLModel:
-    loader = getLoaders(info).contents
+    loader = getLoadersFromInfo(info).contents
     row = await loader.insert(content)
     result = ContentResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
@@ -108,7 +113,7 @@ async def content_insert(self, info: strawberryA.types.Info, content: ContentIns
 
 @strawberryA.mutation(description="Update the content.")
 async def content_update(self, info: strawberryA.types.Info, content: ContentUpdateGQLModel) -> ContentResultGQLModel:
-    loader = getLoaders(info).contents
+    loader = getLoadersFromInfo(info).contents
     row = await loader.update(content)
     result = ContentResultGQLModel(id=row.id, msg="ok")
     result.msg = "ok"
