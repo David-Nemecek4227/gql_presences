@@ -15,14 +15,14 @@ class TaskGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).tasks
-    # async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    # async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
     #     async with withInfo(info) as session:
     #         result = await resolveTaskModelById(session, id)
     #         result._type_definition = cls._type_definition
     #         return result
 
     @strawberryA.field(description="""Primary key of task""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""Timestamp""")
@@ -79,14 +79,14 @@ class TaskGQLModel(BaseGQLModel):
 @strawberryA.input
 class TaskInsertGQLModel:
     name: str
-    user_id: strawberryA.ID
+    user_id: uuid.UUID
     brief_des: Optional[str] = ""
     detailed_des: Optional[str] = ""
     reference: Optional[str] = ""
     date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
-    event_id: Optional[strawberryA.ID] = None
+    event_id: Optional[uuid.UUID] = None
     id: typing.Optional[uuid.UUID] = strawberryA.field(description="primary key (UUID), could be client generated", default=None)
 
 
@@ -112,7 +112,7 @@ class TaskUpdateGQLModel:
     date_of_entry: Optional[datetime.datetime] = None
     date_of_submission: Optional[datetime.datetime] = None
     date_of_fulfillment: Optional[datetime.datetime] = None
-    event_id: Optional[strawberryA.ID] = None
+    event_id: Optional[uuid.UUID] = None
 
 #####################################################################
 #
@@ -121,7 +121,7 @@ class TaskUpdateGQLModel:
 #####################################################################
 @strawberryA.field(description="""Finds tasks by their id""")
 async def task_by_id(
-    self, info: strawberryA.types.Info, id: strawberryA.ID
+    self, info: strawberryA.types.Info, id: uuid.UUID
 ) -> Union[TaskGQLModel, None]:
     result = await TaskGQLModel.resolve_reference(info, id)
     return result
@@ -136,7 +136,7 @@ async def task_page(
 
 @strawberryA.field(description="""Finds presence by their id""")
 async def tasks_by_event(
-    self, info: strawberryA.types.Info, id: strawberryA.ID
+    self, info: strawberryA.types.Info, id: uuid.UUID
 ) -> List[TaskGQLModel]:
     loader = getLoadersFromInfo(info).tasks
     result = await loader.filter_by(event_id=id)

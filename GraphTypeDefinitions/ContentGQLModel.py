@@ -15,14 +15,14 @@ class ContentGQLModel(BaseGQLModel):
     def getLoader(cls, info):
         loader = getLoadersFromInfo(info).contents
         return loader
-    # async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+    # async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
     #     async with withInfo(info) as session:
     #         result = await resolveContentModelById(session, id)
     #         result._type_definition = cls._type_definition
     #         return result
 
     @strawberryA.field(description="""Primary key of content""")
-    def id(self) -> strawberryA.ID:
+    def id(self) -> uuid.UUID:
         return self.id
 
     @strawberryA.field(description="""Brief description""")
@@ -47,7 +47,7 @@ class ContentGQLModel(BaseGQLModel):
 class ContentInsertGQLModel:
     brief_des: Optional[str] = ""
     detailed_des: Optional[str] = ""
-    event_id: Optional[strawberryA.ID] = None
+    event_id: Optional[uuid.UUID] = None
     id: typing.Optional[uuid.UUID] = strawberryA.field(description="primary key (UUID), could be client generated", default=None)
 
 
@@ -58,7 +58,7 @@ class ContentUpdateGQLModel:
 
     brief_des: Optional[str] = None
     detailed_des: Optional[str] = None
-    event_id: Optional[strawberryA.ID] = None
+    event_id: Optional[uuid.UUID] = None
 
 @strawberryA.type
 class ContentResultGQLModel:
@@ -78,7 +78,7 @@ class ContentResultGQLModel:
 
 @strawberryA.field(description="""Finds content by their id""")
 async def content_by_id(
-    self, info: strawberryA.types.Info, id: strawberryA.ID
+    self, info: strawberryA.types.Info, id: uuid.UUID
 ) -> Union[ContentGQLModel, None]:
     result = await ContentGQLModel.resolve_reference(info, id)
     return result

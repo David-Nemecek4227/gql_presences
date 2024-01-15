@@ -3,7 +3,7 @@ import typing
 import strawberry as strawberryA
 from GraphTypeDefinitions.GraphResolvers import resolveContentForEvent
 from .withInfo import withInfo
-
+import uuid
 TaskGQLModel = Annotated["TaskGQLModel",strawberryA.lazy(".TaskGQLModel")]
 ContentGQLModel = Annotated["ContentGQLModel",strawberryA.lazy(".ContentGQLModel")]
 
@@ -14,10 +14,10 @@ ContentGQLModel = Annotated["ContentGQLModel",strawberryA.lazy(".ContentGQLModel
 
 @strawberryA.federation.type(extend=True, keys=["id"])
 class EventGQLModel:
-    id: strawberryA.ID = strawberryA.federation.field(external=True)
+    id: uuid.UUID = strawberryA.federation.field(external=True)
 
     @classmethod
-    async def resolve_reference(cls, id: strawberryA.ID):
+    async def resolve_reference(cls, id: uuid.UUID):
         return EventGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
     # rozšiřujeme jen o atributy (1,1)
@@ -33,7 +33,7 @@ class EventGQLModel:
 
     @strawberryA.field(description="""tasks assiciated with this event""")
     async def tasks(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, id: uuid.UUID
     ) -> List[TaskGQLModel]:
         loader = getLoaders(info).tasks
         result = await loader.filter_by(event_id=self.id)
