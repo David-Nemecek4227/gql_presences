@@ -1,6 +1,6 @@
 from typing import List, Union, Annotated
 import strawberry as strawberryA
-
+import uuid
 TaskGQLModel = Annotated["TaskGQLModel",strawberryA.lazy(".TaskGQLModel")]
 ContentGQLModel = Annotated["ContentGQLModel",strawberryA.lazy(".ContentGQLModel")]
 
@@ -14,7 +14,7 @@ class Query:
     # nedotazovat se na TaskOnEventModel
     @strawberryA.field(description="""Finds a workflow by their id""")
     async def say_hello_presences(
-        self, info: strawberryA.types.Info, id: strawberryA.ID
+        self, info: strawberryA.types.Info, id: uuid.UUID
     ) -> Union[str, None]:
         result = f"Hello {id}"
         return result
