@@ -3,7 +3,8 @@ from tests.gqlshared import (
     create_page_test,
     create_resolve_reference_test,
     create_frontend_query,
-    create_update_query
+    create_update_query,
+    create_delete_query
 )
 
 test_reference_task = create_resolve_reference_test(table_name="tasks", gqltype="TaskGQLModel")
@@ -44,4 +45,16 @@ test_task_update = create_update_query(query="""
         }
     }""",
     variables={"id": "adde473d-5c78-4171-bf16-8e7f97bef5f9", "briefDes": "tester"}, table_name="tasks"
+)
+
+test_task_delete = create_delete_query(query="""
+    mutation($id: UUID!) {
+        result: taskDelete(id: $id)
+        {
+            id
+  	        msg
+        }
+    }""",
+    variables={"id": "adde473d-5c78-4171-bf16-8e7f97bef5f9"},
+    table_name="tasks"
 )

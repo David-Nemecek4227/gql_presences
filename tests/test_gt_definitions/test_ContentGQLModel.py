@@ -3,7 +3,8 @@ from tests.gqlshared import (
     create_page_test,
     create_resolve_reference_test,
     create_frontend_query,
-    create_update_query
+    create_update_query,
+    create_delete_query
 )
 test_reference_content = create_resolve_reference_test(table_name="taskcontents", gqltype="ContentGQLModel")
 test_query_content_by_id = create_by_id_test(table_name="taskcontents", query_endpoint="contentById", attribute_names=["id"])
@@ -39,4 +40,16 @@ test_content_update = create_update_query(query="""
         }
     }""",
     variables={"id": "3eb467f0-97ce-4cdc-a3f2-257074038bd4", "briefDes": "tester"}, table_name="taskcontents"
+)
+
+test_content_delete = create_delete_query(query="""
+    mutation($id: UUID!) {
+        result: contentDelete(id: $id)
+        {
+            id
+  	        msg
+        }
+    }""",
+    variables={"id": "3eb467f0-97ce-4cdc-a3f2-257074038bd4"},
+    table_name="taskcontents"
 )
