@@ -118,3 +118,10 @@ async def content_update(self, info: strawberryA.types.Info, content: ContentUpd
 
     return result
 
+@strawberryA.mutation(description="Delete the content.")
+async def content_delete(self, info: strawberryA.types.Info, id: uuid.UUID) -> ContentResultGQLModel:
+    loader = getLoadersFromInfo(info).contents
+    row = await loader.delete(id=id)
+    result = ContentResultGQLModel(id=id, msg="ok")
+    result.msg = "fail" if row is None else "ok"
+    return result

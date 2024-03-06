@@ -168,3 +168,11 @@ async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLMod
         result.msg = "fail"
 
     return result
+
+@strawberryA.mutation(description="Delete the task.")
+async def task_delete(self, info: strawberryA.types.Info, id: uuid.UUID) -> TaskResultGQLModel:
+    loader = getLoadersFromInfo(info).tasks
+    row = await loader.delete(id=id)
+    result = TaskResultGQLModel(id=id, msg="ok")
+    result.msg = "fail" if row is None else "ok"
+    return result
