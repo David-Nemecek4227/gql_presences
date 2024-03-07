@@ -1,11 +1,12 @@
 from uoishelpers.dataloaders import createIdLoader
 import logging
 from functools import cache
+
+
 from DBDefinitions import (
     ContentModel,
     TaskModel
 )
-
 
 dbmodels = {
     "contents": ContentModel,
@@ -34,9 +35,9 @@ class AuthorizationLoader(DataLoader):
     roleUrlEndpoint = None  # composeAuthUrl()
 
     def __init__(self,
-                 roleUrlEndpoint=roleUrlEndpoint,
-                 query=query,
-                 demo=True):
+        roleUrlEndpoint=roleUrlEndpoint,
+        query=query,
+        demo=True):
         super().__init__(cache=True)
         self.roleUrlEndpoint = roleUrlEndpoint if roleUrlEndpoint else composeAuthUrl()
         self.query = query

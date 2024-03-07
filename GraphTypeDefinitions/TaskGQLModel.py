@@ -6,10 +6,14 @@ import datetime
 from .BaseGQLModel import BaseGQLModel
 
 from utils.Dataloaders import getLoadersFromInfo
-EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
-UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
+
+from .externals import EventGQLModel, UserGQLModel
+# EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
+# UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
 # def getLoaders(info):
 #     return info.context['all']
+from .GraphPermissions import OnlyForAuthentized
+
 @strawberryA.federation.type(keys=["id"], description="""Entity representing tasks""")
 class TaskGQLModel(BaseGQLModel):
     @classmethod
@@ -21,58 +25,71 @@ class TaskGQLModel(BaseGQLModel):
     #         result._type_definition = cls._type_definition
     #         return result
 
-    @strawberryA.field(description="""Primary key of task""")
+    @strawberryA.field(description="""Primary key of task""",
+        permission_classes=[OnlyForAuthentized()])
     def id(self) -> uuid.UUID:
         return self.id
 
-    @strawberryA.field(description="""Timestamp""")
+    @strawberryA.field(description="""Timestamp""",
+        permission_classes=[OnlyForAuthentized()])
     def lastchange(self) -> datetime.datetime:
         return self.lastchange
 
-    @strawberryA.field(description="""Name of tasks""")
+    @strawberryA.field(description="""Name of tasks""",
+        permission_classes=[OnlyForAuthentized()])
     def name(self) -> str:
         return self.name
 
-    @strawberryA.field(description="""Brief description""")
+    @strawberryA.field(description="""Brief description""",
+        permission_classes=[OnlyForAuthentized()])
     def brief_des(self) -> Union[str, None]:
         return self.brief_des
 
-    @strawberryA.field(description="""Full description""")
+    @strawberryA.field(description="""Full description""",
+        permission_classes=[OnlyForAuthentized()])
     def detailed_des(self) -> Union[str, None]:
         return self.detailed_des
 
-    @strawberryA.field(description=""" Reference""")
+    @strawberryA.field(description=""" Reference""",
+        permission_classes=[OnlyForAuthentized()])
     def reference(self) -> Union[str, None]:
         return self.reference
 
-    @strawberryA.field(description="""Date of entry""")
+    @strawberryA.field(description="""Date of entry""",
+        permission_classes=[OnlyForAuthentized()])
     def date_of_entry(self) -> datetime.date:
         return self.date_of_entry
 
-    @strawberryA.field(description="""Date of submission""")
+    @strawberryA.field(description="""Date of submission""",
+        permission_classes=[OnlyForAuthentized()])
     def date_of_submission(self) -> Union[datetime.date, None]:
         return self.date_of_submission
 
-    @strawberryA.field(description="""Date of fullfilment""")
+    @strawberryA.field(description="""Date of fullfilment""",
+        permission_classes=[OnlyForAuthentized()])
     def date_of_fulfillment(self) -> Union[datetime.date, None]:
         return self.date_of_fulfillment
 
-    @strawberryA.field(description="""event id""")
+    @strawberryA.field(description="""event id""",
+        permission_classes=[OnlyForAuthentized()])
     async def event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
-        from .EventGQLModel import EventGQLModel
-        if self.event_id is None:
-            result = None
-        else:
-            result = await EventGQLModel.resolve_reference(id=self.event_id)
+        from .externals import EventGQLModel
+        # if self.event_id is None:
+        #     result = None
+        # else:
+        #     result = await EventGQLModel.resolve_reference(id=self.event_id)
+        result = await EventGQLModel.resolve_reference(id=self.event_id)
         return result
 
-    @strawberryA.field(description="""event id""")
+    @strawberryA.field(description="""event id""",
+        permission_classes=[OnlyForAuthentized()])
     async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
-        from .UserGQLModel import UserGQLModel
-        if self.user_id is None:
-            result = None
-        else:
-            result = await UserGQLModel(id=self.user_id)
+        from .externals import UserGQLModel
+        # if self.user_id is None:
+        #     result = None
+        # else:
+        #     result = await UserGQLModel(id=self.user_id)
+        result = await UserGQLModel.resolve_reference(id=self.user_id)
         return result
 
 
@@ -95,7 +112,8 @@ class TaskResultGQLModel:
     id: uuid.UUID = strawberryA.field(description="primary key of CU operation object")
     msg: str = None
 
-    @strawberryA.field(description="""Result of user operation""")
+    @strawberryA.field(description="""Result of user operation""",
+        permission_classes=[OnlyForAuthentized()])
     async def task(self, info: strawberryA.types.Info) -> Union[TaskGQLModel, None]:
         result = await TaskGQLModel.resolve_reference(info, self.id)
         return result
@@ -119,14 +137,16 @@ class TaskUpdateGQLModel:
 # Special fields for query
 #
 #####################################################################
-@strawberryA.field(description="""Finds tasks by their id""")
+@strawberryA.field(description="""Finds tasks by their id""",
+        permission_classes=[OnlyForAuthentized()])
 async def task_by_id(
     self, info: strawberryA.types.Info, id: uuid.UUID
 ) -> Union[TaskGQLModel, None]:
     result = await TaskGQLModel.resolve_reference(info, id)
     return result
 
-@strawberryA.field(description="""Finds tasks by their page""")
+@strawberryA.field(description="""Finds tasks by their page""",
+        permission_classes=[OnlyForAuthentized()])
 async def task_page(
     self, info: strawberryA.types.Info, skip: int = 0, limit: int = 10
 ) -> List[TaskGQLModel]:
@@ -134,7 +154,8 @@ async def task_page(
     result = await loader.page(skip=skip, limit=limit)
     return result
 
-@strawberryA.field(description="""Finds presence by their id""")
+@strawberryA.field(description="""Finds presence by their id""",
+        permission_classes=[OnlyForAuthentized()])
 async def tasks_by_event(
     self, info: strawberryA.types.Info, id: uuid.UUID
 ) -> List[TaskGQLModel]:
@@ -148,7 +169,8 @@ async def tasks_by_event(
 #
 #####################################################################
 
-@strawberryA.mutation(description="Adds a task.")
+@strawberryA.mutation(description="Adds a task.",
+        permission_classes=[OnlyForAuthentized()])
 async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLModel) -> TaskResultGQLModel:
     loader = getLoadersFromInfo(info).tasks
     row = await loader.insert(task)
@@ -157,19 +179,22 @@ async def task_insert(self, info: strawberryA.types.Info, task: TaskInsertGQLMod
     result.id = row.id
     return result
 
-@strawberryA.mutation(description="Update the task.")
+@strawberryA.mutation(description="Update the task.",
+        permission_classes=[OnlyForAuthentized()])
 async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLModel) -> TaskResultGQLModel:
     loader = getLoadersFromInfo(info).tasks
     row = await loader.update(task)
     result = TaskResultGQLModel(id=row.id, msg="ok")
-    result.msg = "ok"
+    # result.msg = "ok"
     result.id = row.id
-    if row is None:
-        result.msg = "fail"
+    result.msg = "fail" if row is None else "ok"
+    # if row is None:
+    #     result.msg = "fail"
 
     return result
 
-@strawberryA.mutation(description="Delete the task.")
+@strawberryA.mutation(description="Delete the task.",
+        permission_classes=[OnlyForAuthentized()])
 async def task_delete(self, info: strawberryA.types.Info, id: uuid.UUID) -> TaskResultGQLModel:
     loader = getLoadersFromInfo(info).tasks
     row = await loader.delete(id=id)

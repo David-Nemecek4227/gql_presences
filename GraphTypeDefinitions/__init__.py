@@ -53,8 +53,8 @@ import strawberry as strawberryA
 #
 ###########################################################################################################################
 from .Query import Query
-from .UserGQLModel import UserGQLModel
-from .EventGQLModel import EventGQLModel
+from .externals import UserGQLModel
+from .externals import EventGQLModel
 from .TaskGQLModel import TaskGQLModel
 from .Mutation import Mutation
 
