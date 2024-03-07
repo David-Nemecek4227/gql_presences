@@ -2,7 +2,7 @@ import pytest
 
 from DBDefinitions import startEngine
 
-from .shared import prepare_demodata, prepare_in_memory_sqllite
+from tests.shared import prepare_demodata, prepare_in_memory_sqllite
 
 
 @pytest.mark.asyncio
