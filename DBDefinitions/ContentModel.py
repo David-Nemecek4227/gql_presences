@@ -22,7 +22,7 @@ class ContentModel(BaseModel):
 
     created = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="when this entity has been created")
     lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now(), comment="timestamp / token")
-    changedby = UUIDFKey(nullable=True,comment="changed by")#Column(ForeignKey("users.id"), index=True, nullable=True)
-    createdby = UUIDFKey(nullable=True)#Column(ForeignKey("users.id"), index=True, nullable=True)
+    changedby = UUIDFKey(nullable=True,comment="who changed this entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
+    createdby = UUIDFKey(nullable=True,comment="who created this entity")#Column(ForeignKey("users.id"), index=True, nullable=True)
 
     # events = relationship('EventModel', back_populates='contents')
