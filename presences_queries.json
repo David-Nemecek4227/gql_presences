@@ -1,0 +1,96 @@
+{
+  "comment1": "***************************** QUERIES ************************************************",
+
+  "contentById": {
+    "query": "query MyQuery($id: UUID!) { contentById(id: $id) { briefDesc detailedDesc event { id } id } }",
+    "variables": {
+      "id": "3eb467f0-97ce-4cdc-a3f2-257074038bd4"
+    }
+  },
+
+  "taskById": {
+    "query": "query MyQuery($id: UUID!) { taskById(id: $id) { briefDes dateOfEntry dateOfFulfillment dateOfSubmission detailedDes id lastchange name reference } }",
+    "variables": {
+      "id": "adde473d-5c78-4171-bf16-8e7f97bef5f9"
+    }
+  },
+
+  "contentPage": {
+    "query": "query MyQuery { contentPage { briefDesc detailedDesc event { id } id } }",
+    "variables": {}
+  },
+
+  "taskPage": {
+    "query": "query MyQuery { taskPage { briefDes dateOfEntry dateOfFulfillment dateOfSubmission detailedDes id lastchange name reference } }",
+    "variables": {}
+  },
+
+  "tasksByEvent": {
+    "query": "query MyQuery($id: UUID!) { tasksByEvent(id: $id) { briefDes dateOfEntry dateOfFulfillment dateOfSubmission detailedDes id lastchange name reference } }",
+    "variables": {
+      "id": "45b2df80-ae0f-11ed-9bd8-0242ac110002"
+    }
+  },
+
+  "comment2": "***************************** MUTATIONS ************************************************",
+
+  "contentInsert": {
+    "query": "mutation Content_insert($data: ContentInsertGQLModel!) { contentInsert(content: $data) { id msg } }",
+    "variables": {
+      "data": {
+        "id": "3eb467f0-97ce-4cdc-a3f2-257074038bd9",
+        "briefDes": "test123",
+        "eventId": "45b2df80-ae0f-11ed-9bd8-0242ac110003"
+      }
+    }
+  },
+
+  "contentUpdate": {
+    "query": "mutation Content_update($data: ContentUpdateGQLModel!) { contentUpdate(content: $data) { id msg } }",
+    "variables": {
+      "data": {
+        "id": "3eb467f0-97ce-4cdc-a3f2-257074038bd9",
+        "lastchange": "2024-03-07 18:40:18.845832",
+        "briefDes": "updatetest"
+      }
+    }
+  },
+
+  "contentDelete": {
+    "query": "mutation Content_delete($id: UUID!) { contentDelete(id: $id) { id msg } }",
+    "variables": {
+      "id": "3eb467f0-97ce-4cdc-a3f2-257074038bd9"
+    }
+  },
+
+  "taskInsert": {
+    "query": "mutation Task_insert($data: TaskInsertGQLModel!) { taskInsert(task: $data) { id msg } }",
+    "variables": {
+      "data": {
+        "name": "1",
+        "id": "adde473d-5c78-4171-bf16-8e7f97bef5f8",
+        "briefDes": "new321",
+        "userId": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003",
+        "eventId": "45b2df80-ae0f-11ed-9bd8-0242ac110002"
+      }
+    }
+  },
+
+  "taskUpdate": {
+    "query": "mutation Task_update($data: TaskUpdateGQLModel!) { taskUpdate(task: $data) { msg } }",
+    "variables": {
+      "data": {
+        "id": "adde473d-5c78-4171-bf16-8e7f97bef5f7",
+        "lastchange": "2024-01-15 09:24:56.111807",
+        "briefDes": "testuuid"
+      }
+    }
+  },
+
+  "taskDelete": {
+    "query": "mutation Task_delete($id: UUID!) { taskDelete(id: $id) { id msg } }",
+    "variables": {
+      "id": "adde473d-5c78-4171-bf16-8e7f97bef5f7"
+    }
+  }
+}
