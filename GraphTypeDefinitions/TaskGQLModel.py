@@ -103,7 +103,7 @@ class TaskInsertGQLModel:
     date_of_entry: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_submission: Optional[datetime.datetime] = datetime.datetime.now()
     date_of_fulfillment: Optional[datetime.datetime] = datetime.datetime.now() + datetime.timedelta(days=7)
-    event_id: Optional[uuid.UUID] = None
+    event_id: Optional[uuid.UUID] =  strawberryA.field(description="The ID of the event data", default=None)
     id: typing.Optional[uuid.UUID] = strawberryA.field(description="primary key (UUID), could be client generated", default=None)
 
 
