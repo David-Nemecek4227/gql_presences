@@ -9,8 +9,7 @@ from tests.gqlshared import (
 
 test_reference_task = create_resolve_reference_test(table_name="tasks", gqltype="TaskGQLModel")
 test_query_task_by_id = create_by_id_test(table_name="tasks", query_endpoint="taskById", attribute_names=["id"])
-test_query_content_page = create_page_test(table_name="tasks", query_endpoint="taskPage", attribute_names=["id"])
-
+test_query_task_page = create_page_test(table_name="tasks", query_endpoint="taskPage", attribute_names=["id"])
 
 test_task_insert = create_frontend_query(query="""
     mutation ($name: String!, $id: UUID!, $briefDes: String!, $userId: UUID!) {
