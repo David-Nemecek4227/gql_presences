@@ -12,9 +12,9 @@ test_query_task_by_id = create_by_id_test(table_name="tasks", query_endpoint="ta
 test_query_task_page = create_page_test(table_name="tasks", query_endpoint="taskPage", attribute_names=["id"])
 
 test_task_insert = create_frontend_query(query="""
-    mutation ($name: String!, $id: UUID!, $briefDes: String!, $userId: UUID!) {
+    mutation ($name: String!, $id: UUID!, $briefDes: String!, $userId: UUID!, $eventId: UUID!) {
   result: taskInsert(
-    task: {name: $name, id: $id, briefDes: $briefDes, userId: $userId}
+    task: {name: $name, id: $id, briefDes: $briefDes, userId: $userId, eventId: $eventId}
   ) {
     id
     msg
@@ -28,10 +28,12 @@ test_task_insert = create_frontend_query(query="""
       lastchange
       name
       reference
+      event{id}
+      user{id}
     }
   }
 }""",
-    variables={"name": "testing", "id": "adde473d-5c78-4171-bf16-8e7f97bef5f3", "briefDes": "tester", "userId": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003"}
+    variables={"name": "testing", "id": "adde473d-5c78-4171-bf16-8e7f97bef5f3", "briefDes": "tester", "userId": "2d9dc5ca-a4a2-11ed-b9df-0242ac120003", "eventId": "45b2df80-ae0f-11ed-9bd8-0242ac110002"}
 )
 
 test_task_update = create_update_query(query="""
@@ -41,6 +43,7 @@ test_task_update = create_update_query(query="""
             task {
                 id
             }
+            
         }
     }""",
     variables={"id": "adde473d-5c78-4171-bf16-8e7f97bef5f9", "briefDes": "tester"}, table_name="tasks"
