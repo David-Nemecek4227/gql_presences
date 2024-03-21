@@ -8,22 +8,15 @@ from .BaseGQLModel import BaseGQLModel
 from utils.Dataloaders import getLoadersFromInfo
 
 from .externals import EventGQLModel, UserGQLModel
-# EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".EventGQLModel")]
-# UserGQLModel = Annotated["UserGQLModel", strawberryA.lazy(".UserGQLModel")]
-# def getLoaders(info):
-#     return info.context['all']
 from .GraphPermissions import OnlyForAuthentized
+#EventGQLModel = Annotated["EventGQLModel", strawberryA.lazy(".externals")]
 
 @strawberryA.federation.type(keys=["id"], description="""Entity representing tasks""")
 class TaskGQLModel(BaseGQLModel):
     @classmethod
     def getLoader(cls, info):
         return getLoadersFromInfo(info).tasks
-    # async def resolve_reference(cls, info: strawberryA.types.Info, id: uuid.UUID):
-    #     async with withInfo(info) as session:
-    #         result = await resolveTaskModelById(session, id)
-    #         result._type_definition = cls._type_definition
-    #         return result
+
 
     @strawberryA.field(description="""Primary key of task""",
         permission_classes=[OnlyForAuthentized()])
@@ -72,25 +65,15 @@ class TaskGQLModel(BaseGQLModel):
 
     @strawberryA.field(description="""event id""",
         permission_classes=[OnlyForAuthentized()])
-    async def event(self, info: strawberryA.types.Info) -> Union["EventGQLModel", None]:
+    async def event(self) -> Union["EventGQLModel", None]:
         from .externals import EventGQLModel
-        # if self.event_id is None:
-        #     result = None
-        # else:
-        #     result = await EventGQLModel.resolve_reference(id=self.event_id)
-        result = await EventGQLModel.resolve_reference(id=self.event_id)
-        return result
+        return EventGQLModel(id=self.event_id)
 
     @strawberryA.field(description="""event id""",
         permission_classes=[OnlyForAuthentized()])
-    async def user(self, info: strawberryA.types.Info) -> Union["UserGQLModel", None]:
+    async def user(self) -> Union["UserGQLModel", None]:
         from .externals import UserGQLModel
-        # if self.user_id is None:
-        #     result = None
-        # else:
-        #     result = await UserGQLModel(id=self.user_id)
-        result = await UserGQLModel.resolve_reference(id=self.user_id)
-        return result
+        return UserGQLModel(id=self.user_id)
 
 
 @strawberryA.input
@@ -185,12 +168,8 @@ async def task_update(self, info: strawberryA.types.Info, task: TaskUpdateGQLMod
     loader = getLoadersFromInfo(info).tasks
     row = await loader.update(task)
     result = TaskResultGQLModel(id=row.id, msg="ok")
-    # result.msg = "ok"
     result.id = row.id
     result.msg = "fail" if row is None else "ok"
-    # if row is None:
-    #     result.msg = "fail"
-
     return result
 
 @strawberryA.mutation(description="Delete the task.",
